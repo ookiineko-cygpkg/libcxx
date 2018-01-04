@@ -1,0 +1,32 @@
+--- origsrc/libcxx-5.0.1.src/cmake/config-ix.cmake	2017-05-25 17:43:42.000000000 -0500
++++ src/libcxx-5.0.1.src/cmake/config-ix.cmake	2018-01-03 19:40:51.533020700 -0600
+@@ -50,6 +50,17 @@ if (LIBCXX_SUPPORTS_NODEFAULTLIBS_FLAG)
+                         shell32 user32 kernel32 mingw32 ${MINGW_RUNTIME}
+                         moldname mingwex msvcrt)
+     list(APPEND CMAKE_REQUIRED_LIBRARIES ${MINGW_LIBRARIES})
++  elseif (CYGWIN)
++    # Mingw64 requires quite a few "C" runtime libraries in order for basic
++    # programs to link successfully with -nodefaultlibs.
++    if (LIBCXX_USE_COMPILER_RT)
++      set(CYGWIN_RUNTIME ${LIBCXX_BUILTINS_LIBRARY})
++    else ()
++      set(CYGWIN_RUNTIME gcc_s gcc)
++    endif()
++    set(CYGWIN_LIBRARIES ${CYGWIN_RUNTIME} cygwin advapi32
++                        shell32 user32 kernel32 ${CYGWIN_RUNTIME})
++    list(APPEND CMAKE_REQUIRED_LIBRARIES ${CYGWIN_LIBRARIES})
+   endif()
+   if (CMAKE_C_FLAGS MATCHES -fsanitize OR CMAKE_CXX_FLAGS MATCHES -fsanitize)
+     set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -fno-sanitize=all")
+--- origsrc/libcxx-5.0.1.src/lib/CMakeLists.txt	2017-07-18 14:48:02.000000000 -0500
++++ src/libcxx-5.0.1.src/lib/CMakeLists.txt	2018-01-03 19:47:27.926959400 -0600
+@@ -91,6 +91,9 @@ else()
+   add_library_flags_if(LIBCXX_HAS_GCC_S_LIB gcc_s)
+ endif()
+ add_library_flags_if(LIBCXX_HAVE_CXX_ATOMICS_WITH_LIB atomic)
++if (CYGWIN)
++list(APPEND LIBCXX_LIBRARIES catgets ${CYGWIN_LIBRARIES})
++endif ()
+ 
+ # Add the unwinder library.
+ if (LIBCXXABI_USE_LLVM_UNWINDER)

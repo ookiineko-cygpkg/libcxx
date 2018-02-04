@@ -25,7 +25,7 @@
  endif()
  add_library_flags_if(LIBCXX_HAVE_CXX_ATOMICS_WITH_LIB atomic)
 +if (CYGWIN)
-+list(APPEND LIBCXX_LIBRARIES catgets ${CYGWIN_LIBRARIES})
++list(APPEND LIBCXX_LIBRARIES ${CYGWIN_LIBRARIES})
 +endif ()
  
  # Add the unwinder library.

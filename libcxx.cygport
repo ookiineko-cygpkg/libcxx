@@ -2,7 +2,7 @@ inherit clang cmake
 
 NAME="libcxx"
 VERSION=5.0.1
-RELEASE=1
+RELEASE=2
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"
 DESCRIPTION="Clang is an LLVM native C/C++/ObjC compiler, which aims to deliver
@@ -27,7 +27,7 @@ PATCH_URI="
 
 PKG_NAMES="libc++1 libc++-devel"
 libc__1_CONTENTS="usr/bin/cygc++-1.dll usr/share/doc/${NAME}"
-libc___devel_REQUIRES="libc++abi-devel libcatgets-devel"
+libc___devel_REQUIRES="libc++abi-devel"
 libc___devel_CONTENTS="usr/include/c++/v1/ usr/lib/libc++*"
 
 DIFF_EXCLUDES="bad_symlink"

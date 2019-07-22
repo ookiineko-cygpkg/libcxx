@@ -1,8 +1,9 @@
+CYGCMAKE_GENERATOR="Ninja"
 inherit clang cmake
 
 NAME="libcxx"
-VERSION=5.0.1
-RELEASE=2
+VERSION=7.0.1
+RELEASE=1
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"
 DESCRIPTION="Clang is an LLVM native C/C++/ObjC compiler, which aims to deliver
@@ -15,14 +16,12 @@ HOMEPAGE="http://clang.llvm.org/"
 SRC_URI="http://www.llvm.org/releases/${VERSION}/libcxx-${VERSION}.src.tar.xz"
 SRC_DIR="libcxx-${VERSION}.src"
 PATCH_URI="
-	5.0.1-cygming-config.patch
+	7.0.1-cygming-config.patch
 	5.0.1-cygming-dllexport.patch
-	5.0.1-cygming-install.patch
-	5.0.1-cygwin-config.patch
+	7.0.1-cygming-install.patch
+	7.0.1-cygwin-config.patch
 	5.0.1-cygwin-flags.patch
-	5.0.1-cygwin-locale.patch
-	5.0.1-cygwin-nodefaultlibs.patch
-	5.0.1-cygwin-strerror_r.patch
+	7.0.1-cygwin-nodefaultlibs.patch
 "
 
 PKG_NAMES="libc++1 libc++-devel"
@@ -43,7 +42,7 @@ src_compile() {
 		 -DLIBCXX_ENABLE_SHARED=ON \
 		 -DLIBCXX_ENABLE_STATIC=OFF \
 		 -DLIBCXX_USE_COMPILER_RT=ON
-	cygmake
+	cygninja
 	mkdir -p ${B}/static
 	cd ${B}/static
 	cygcmake -DLIBCXX_CXX_ABI=libcxxabi \
@@ -52,14 +51,14 @@ src_compile() {
 		 -DLIBCXX_ENABLE_SHARED=OFF \
 		 -DLIBCXX_ENABLE_STATIC=ON \
 		 -DLIBCXX_USE_COMPILER_RT=ON
-	cygmake
+	cygninja
 }
 
 src_install() {
 	cd ${B}/static
-	cyginstall
+	ninja_install
 	cd ${B}/shared
-	cyginstall
+	ninja_install
 
 	dodoc ${S}/*.TXT
 }

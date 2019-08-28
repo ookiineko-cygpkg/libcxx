@@ -2,7 +2,7 @@ CYGCMAKE_GENERATOR="Ninja"
 inherit clang cmake
 
 NAME="libcxx"
-VERSION=7.0.1
+VERSION=8.0.1
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"
@@ -13,7 +13,7 @@ Analyzer is a tool that automatically finds bugs in your code, and is a great
 example of the sort of tool that can be built using the Clang frontend as a
 library to parse C/C++ code."
 HOMEPAGE="http://clang.llvm.org/"
-SRC_URI="http://www.llvm.org/releases/${VERSION}/libcxx-${VERSION}.src.tar.xz"
+SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${NAME}-${VERSION}.src.tar.xz"
 SRC_DIR="libcxx-${VERSION}.src"
 PATCH_URI="
 	7.0.1-cygming-config.patch
@@ -41,7 +41,8 @@ src_compile() {
 		 -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=OFF \
 		 -DLIBCXX_ENABLE_SHARED=ON \
 		 -DLIBCXX_ENABLE_STATIC=OFF \
-		 -DLIBCXX_USE_COMPILER_RT=ON
+		 -DLIBCXX_USE_COMPILER_RT=ON \
+		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON
 	cygninja
 	mkdir -p ${B}/static
 	cd ${B}/static
@@ -50,7 +51,8 @@ src_compile() {
 		 -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=OFF \
 		 -DLIBCXX_ENABLE_SHARED=OFF \
 		 -DLIBCXX_ENABLE_STATIC=ON \
-		 -DLIBCXX_USE_COMPILER_RT=ON
+		 -DLIBCXX_USE_COMPILER_RT=ON \
+		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON
 	cygninja
 }
 

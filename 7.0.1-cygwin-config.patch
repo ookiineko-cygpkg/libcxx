@@ -20,7 +20,19 @@
  #if defined(_WIN32)
  #  define _LIBCPP_WIN32API
  #  define _LIBCPP_LITTLE_ENDIAN
-@@ -979,7 +983,7 @@ template <unsigned> struct __static_asse
+@@ -808,7 +812,11 @@ typedef __char32_t char32_t;
+ #endif
+ 
+ // Just so we can migrate to the new macros gradually.
++#ifdef _LIBCPP_BUILDING_LIBRARY
++#define _LIBCPP_INLINE_VISIBILITY
++#else
+ #define _LIBCPP_INLINE_VISIBILITY _LIBCPP_HIDE_FROM_ABI
++#endif
+ 
+ // Inline namespaces are available in Clang/GCC/MSVC regardless of C++ dialect.
+ #define _LIBCPP_BEGIN_NAMESPACE_STD namespace std { inline namespace _LIBCPP_ABI_NAMESPACE {
+@@ -979,7 +987,7 @@ template <unsigned> struct __static_asse
  
  #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
  // Most unix variants have catopen.  These are the specific ones that don't.
@@ -29,7 +41,7 @@
  #    define _LIBCPP_HAS_CATOPEN 1
  #  endif
  #endif
-@@ -1113,6 +1117,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
+@@ -1113,6 +1121,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
        defined(__APPLE__) || \
        defined(__CloudABI__) || \
        defined(__sun__) || \
@@ -37,7 +49,7 @@
        (defined(__MINGW32__) && __has_include(<pthread.h>))
  #    define _LIBCPP_HAS_THREAD_API_PTHREAD
  #  elif defined(_LIBCPP_WIN32API)
-@@ -1200,7 +1205,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
+@@ -1200,7 +1209,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
  #endif
  
  #if !defined(_LIBCPP_HAS_NO_OFF_T_FUNCTIONS)

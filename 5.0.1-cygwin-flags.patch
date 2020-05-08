@@ -10,14 +10,3 @@
  
  if (LIBCXX_CONFIGURE_IDE)
    # This simply allows IDE to process <experimental/coroutine>
---- origsrc/libcxx-5.0.1.src/lib/CMakeLists.txt	2017-07-18 14:48:02.000000000 -0500
-+++ src/libcxx-5.0.1.src/lib/CMakeLists.txt	2018-01-03 19:47:27.926959400 -0600
-@@ -104,7 +104,7 @@ if (LIBCXXABI_USE_LLVM_UNWINDER)
- endif()
- 
- # Setup flags.
--if (NOT WIN32)
-+if (NOT WIN32 AND NOT CYGWIN)
-   add_flags_if_supported(-fPIC)
- endif()
- 

@@ -2,7 +2,7 @@ CYGCMAKE_GENERATOR="Ninja"
 inherit clang cmake
 
 NAME="libcxx"
-VERSION=8.0.1
+VERSION=9.0.1
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"
@@ -18,10 +18,9 @@ SRC_DIR="libcxx-${VERSION}.src"
 PATCH_URI="
 	7.0.1-cygming-config.patch
 	5.0.1-cygming-dllexport.patch
-	7.0.1-cygming-install.patch
 	7.0.1-cygwin-config.patch
 	5.0.1-cygwin-flags.patch
-	7.0.1-cygwin-nodefaultlibs.patch
+	9.0.1-cygwin-nodefaultlibs.patch
 "
 
 PKG_NAMES="libc++1 libc++-devel"

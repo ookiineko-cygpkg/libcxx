@@ -22,6 +22,7 @@ PATCH_URI="
 	5.0.1-cygwin-flags.patch
 	9.0.1-cygwin-nodefaultlibs.patch
 "
+RESTRICT="debuginfo"
 
 PKG_NAMES="libc++1 libc++-devel"
 libc__1_CONTENTS="usr/bin/cygc++-1.dll usr/share/doc/${NAME}"

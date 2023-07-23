@@ -2,7 +2,7 @@ CYGCMAKE_GENERATOR="Ninja"
 inherit clang cmake
 
 NAME="libcxx"
-VERSION=9.0.1
+VERSION=10.0.1
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"

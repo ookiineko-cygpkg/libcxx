@@ -18,14 +18,14 @@
    endif()
    if (CMAKE_C_FLAGS MATCHES -fsanitize OR CMAKE_CXX_FLAGS MATCHES -fsanitize)
      set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -fno-sanitize=all")
---- origsrc/libcxx-9.0.1.src/src/CMakeLists.txt	2019-12-11 14:15:30.000000000 -0500
-+++ src/libcxx-9.0.1.src/src/CMakeLists.txt	2020-05-05 10:29:28.013357300 -0400
+--- origsrc/libcxx-9.0.1.src/CMakeLists.txt	2019-12-11 14:15:30.000000000 -0500
++++ src/libcxx-9.0.1.src/CMakeLists.txt	2020-05-05 10:29:28.013357300 -0400
 @@ -177,6 +177,8 @@ function(cxx_link_system_libraries targe
  
    if (MINGW)
-     target_link_libraries(${target} PUBLIC "${MINGW_LIBRARIES}")
+     target_link_libraries(${target} PRIVATE "${MINGW_LIBRARIES}")
 +  elseif (CYGWIN)
-+    target_link_libraries(${target} PUBLIC "${CYGWIN_LIBRARIES}")
++    target_link_libraries(${target} PRIVATE "${CYGWIN_LIBRARIES}")
    endif()
  
    if (LIBCXX_TARGETING_MSVC)

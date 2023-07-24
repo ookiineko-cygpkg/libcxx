@@ -42,7 +42,8 @@ src_compile() {
 		 -DLIBCXX_ENABLE_SHARED=ON \
 		 -DLIBCXX_ENABLE_STATIC=OFF \
 		 -DLIBCXX_USE_COMPILER_RT=ON \
-		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON
+		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config
 	cygninja
 	mkdir -p ${B}/static
 	cd ${B}/static
@@ -52,7 +53,8 @@ src_compile() {
 		 -DLIBCXX_ENABLE_SHARED=OFF \
 		 -DLIBCXX_ENABLE_STATIC=ON \
 		 -DLIBCXX_USE_COMPILER_RT=ON \
-		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON
+		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config
 	cygninja
 }
 

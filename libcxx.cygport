@@ -2,7 +2,7 @@ CYGCMAKE_GENERATOR="Ninja"
 inherit clang cmake
 
 NAME="libcxx"
-VERSION=10.0.1
+VERSION=11.0.0
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"
@@ -16,11 +16,13 @@ HOMEPAGE="http://clang.llvm.org/"
 SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${NAME}-${VERSION}.src.tar.xz"
 SRC_DIR="libcxx-${VERSION}.src"
 PATCH_URI="
+	https://src.fedoraproject.org/rpms/${PN}/raw/f33/f/0001-${PN}-Remove-monorepo-requirement.patch
 	7.0.1-cygming-config.patch
 	5.0.1-cygming-dllexport.patch
 	7.0.1-cygwin-config.patch
 	5.0.1-cygwin-flags.patch
 	9.0.1-cygwin-nodefaultlibs.patch
+	11.0.0-weak-dllexport.patch
 "
 RESTRICT="debuginfo"
 
@@ -43,7 +45,8 @@ src_compile() {
 		 -DLIBCXX_ENABLE_STATIC=OFF \
 		 -DLIBCXX_USE_COMPILER_RT=ON \
 		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
-		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config
+		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config \
+		 -DLIBCXX_STANDALONE_BUILD=ON
 	cygninja
 	mkdir -p ${B}/static
 	cd ${B}/static
@@ -54,7 +57,8 @@ src_compile() {
 		 -DLIBCXX_ENABLE_STATIC=ON \
 		 -DLIBCXX_USE_COMPILER_RT=ON \
 		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
-		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config
+		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config \
+		 -DLIBCXX_STANDALONE_BUILD=ON
 	cygninja
 }
 

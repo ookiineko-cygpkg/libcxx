@@ -42,13 +42,13 @@
  #  endif
  #endif
 @@ -1113,6 +1121,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
-       defined(__APPLE__) || \
        defined(__CloudABI__) || \
        defined(__sun__) || \
+       defined(__MVS__) || \
 +      defined(__CYGWIN__) || \
        (defined(__MINGW32__) && __has_include(<pthread.h>))
  #    define _LIBCPP_HAS_THREAD_API_PTHREAD
- #  elif defined(_LIBCPP_WIN32API)
+ #  elif defined(__Fuchsia__)
 @@ -1200,7 +1209,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
  #endif
  

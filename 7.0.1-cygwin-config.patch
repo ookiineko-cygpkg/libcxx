@@ -32,29 +32,33 @@
  
  // Inline namespaces are available in Clang/GCC/MSVC regardless of C++ dialect.
  #define _LIBCPP_BEGIN_NAMESPACE_STD namespace std { inline namespace _LIBCPP_ABI_NAMESPACE {
-@@ -979,7 +987,7 @@ template <unsigned> struct __static_asse
+@@ -1113,6 +1121,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
+       defined(__sun__) || \
+       defined(__MVS__) || \
+       defined(_AIX) || \
++      defined(__CYGWIN__) || \
+       (defined(__MINGW32__) && __has_include(<pthread.h>))
+ #    define _LIBCPP_HAS_THREAD_API_PTHREAD
+ #  elif defined(__Fuchsia__)
+--- origsrc/libcxx-13.0.1.src/include/locale   	2022-01-21 05:31:59.000000000 +0800
++++ src/libcxx-13.0.1.src/include/locale       	2023-12-14 10:25:48.788758200 +0800
+@@ -206,7 +206,7 @@
  
  #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
  // Most unix variants have catopen.  These are the specific ones that don't.
 -#  if !defined(__BIONIC__) && !defined(_NEWLIB_VERSION)
 +#  if !defined(__BIONIC__) && !defined(_NEWLIB_VERSION) || defined(__CYGWIN__)
  #    define _LIBCPP_HAS_CATOPEN 1
+ #    include <nl_types.h>
  #  endif
- #endif
-@@ -1113,6 +1121,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
-       defined(__CloudABI__) || \
-       defined(__sun__) || \
-       defined(__MVS__) || \
-+      defined(__CYGWIN__) || \
-       (defined(__MINGW32__) && __has_include(<pthread.h>))
- #    define _LIBCPP_HAS_THREAD_API_PTHREAD
- #  elif defined(__Fuchsia__)
-@@ -1200,7 +1209,7 @@ _LIBCPP_FUNC_VIS extern "C" void __sanit
+--- origsrc/libcxx-13.0.1.src/include/fstream  	2022-01-21 05:31:59.000000000 +0800
++++ src/libcxx-13.0.1.src/include/fstream      	2023-12-14 10:28:11.933209700 +0800
+@@ -199,7 +199,7 @@
+ _LIBCPP_PUSH_MACROS
+ #include <__undef_macros>
+ 
+-#if defined(_LIBCPP_MSVCRT) || defined(_NEWLIB_VERSION)
++#if defined(_LIBCPP_MSVCRT) || (defined(_NEWLIB_VERSION) && !defined(__CYGWIN__))
+ #  define _LIBCPP_HAS_NO_OFF_T_FUNCTIONS
  #endif
  
- #if !defined(_LIBCPP_HAS_NO_OFF_T_FUNCTIONS)
--#  if defined(_LIBCPP_MSVCRT) || defined(_NEWLIB_VERSION)
-+#  if defined(_LIBCPP_MSVCRT) || (defined(_NEWLIB_VERSION) && !defined(__CYGWIN__))
- #    define _LIBCPP_HAS_NO_OFF_T_FUNCTIONS
- #  endif
- #endif

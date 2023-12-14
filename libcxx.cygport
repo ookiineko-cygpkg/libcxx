@@ -2,7 +2,7 @@ CYGCMAKE_GENERATOR="Ninja"
 inherit clang cmake
 
 NAME="libcxx"
-VERSION=13.0.1
+VERSION=14.0.5
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"
@@ -16,15 +16,20 @@ HOMEPAGE="http://clang.llvm.org/"
 SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${NAME}-${VERSION}.src.tar.xz"
 SRC_DIR="libcxx-${VERSION}.src"
 PATCH_URI="
-	https://src.fedoraproject.org/rpms/${PN}/raw/f35/f/0001-PATCH-${PN}-Remove-monorepo-requirement.patch
+	https://src.fedoraproject.org/rpms/${PN}/raw/f36/f/0001-PATCH-${PN}-Remove-monorepo-requirement.patch
+	https://src.fedoraproject.org/rpms/${PN}/raw/f36/f/add-llvm-cmake-package.patch
 	7.0.1-cygming-config.patch
 	5.0.1-cygming-dllexport.patch
 	7.0.1-cygwin-config.patch
 	5.0.1-cygwin-flags.patch
 	9.0.1-cygwin-nodefaultlibs.patch
 	11.0.0-weak-dllexport.patch
+	14.0.5-newlib-regex_word.patch
+	14.0.5-out-of-tree-libunwind.patch
+	14.0.5-cygwin-dllexport.patch
+	14.0.5-newlib-ctype-char-cast.patch
 "
-RESTRICT="debuginfo"
+RESTRICT="debuginfo strip"
 
 PKG_NAMES="libc++1 libc++-devel"
 libc__1_CONTENTS="usr/bin/cygc++-1.dll usr/share/doc/${NAME}"
@@ -45,8 +50,10 @@ src_compile() {
 		 -DLIBCXX_ENABLE_STATIC=OFF \
 		 -DLIBCXX_USE_COMPILER_RT=ON \
 		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+		 -DLIBCXX_HAS_PTHREAD_API=ON \
 		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config \
-		 -DLIBCXX_STANDALONE_BUILD=ON
+		 -DLIBCXX_STANDALONE_BUILD=ON \
+		 -DLIBCXX_INCLUDE_BENCHMARKS=OFF
 	cygninja
 	mkdir -p ${B}/static
 	cd ${B}/static
@@ -57,8 +64,10 @@ src_compile() {
 		 -DLIBCXX_ENABLE_STATIC=ON \
 		 -DLIBCXX_USE_COMPILER_RT=ON \
 		 -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+		 -DLIBCXX_HAS_PTHREAD_API=ON \
 		 -DLLVM_CONFIG_PATH=/usr/bin/llvm-config \
-		 -DLIBCXX_STANDALONE_BUILD=ON
+		 -DLIBCXX_STANDALONE_BUILD=ON \
+		 -DLIBCXX_INCLUDE_BENCHMARKS=OFF
 	cygninja
 }
 
@@ -72,5 +81,5 @@ src_install() {
 
 	# Install header files that libcxxabi needs
 	mkdir ${D}/usr/include/libcxx-internal/
-	install -m 0644 ${S}/src/include/* ${D}/usr/include/libcxx-internal/
+	install -m 0644 ${S}/src/include/*.h ${D}/usr/include/libcxx-internal/
 }

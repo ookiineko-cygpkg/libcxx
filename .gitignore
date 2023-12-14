@@ -1,3 +1,4 @@
 /*.tar*
 /libcxx-*/
 /[0-9][0-9][0-9][0-9]-*.patch
+/[a-zA-Z]*.patch

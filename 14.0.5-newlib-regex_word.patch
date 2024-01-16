@@ -16,14 +16,14 @@ index 242de1ad1a716c..e02724c862e25a 100644
  # define _LIBCPP_CTYPE_MASK_IS_COMPOSITE_XDIGIT
 @@ -551,7 +552,8 @@ public:
  
- // TODO: Remove the ifndef when the assert no longer fails on AIX.
- #ifndef _AIX
+     _LIBCPP_INLINE_VISIBILITY ctype_base() {}
+ 
 -    static_assert((__regex_word & ~(space | print | cntrl | upper | lower | alpha | digit | punct | xdigit | blank)) == __regex_word,
 +    static_assert((__regex_word & ~(std::make_unsigned<mask>::type)(space | print | cntrl | upper | lower | alpha |
 +                                                                    digit | punct | xdigit | blank)) == __regex_word,
                    "__regex_word can't overlap other bits");
- #endif
  };
+ 
 diff --git a/libcxx/include/regex b/libcxx/include/regex
 index 3c3a2e4a79486c..f35197339ba9c1 100644
 --- a/libcxx/include/regex

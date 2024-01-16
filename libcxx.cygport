@@ -2,7 +2,7 @@ CYGCMAKE_GENERATOR="Ninja"
 inherit clang cmake
 
 NAME="libcxx"
-VERSION=14.0.5
+VERSION=15.0.7
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="C++ standard library for Clang"
@@ -13,21 +13,23 @@ Analyzer is a tool that automatically finds bugs in your code, and is a great
 example of the sort of tool that can be built using the Clang frontend as a
 library to parse C/C++ code."
 HOMEPAGE="http://clang.llvm.org/"
-SRC_URI="https://github.com/llvm/llvm-project/releases/download/llvmorg-${VERSION}/${NAME}-${VERSION}.src.tar.xz"
+SRC_URI="
+  https://github.com/llvm/llvm-project/releases/download/llvmorg-${PN}/${P}.src.tar.xz
+  https://github.com/llvm/llvm-project/releases/download/llvmorg-${PV}/cmake-${PV}.src.tar.xz
+"
 SRC_DIR="libcxx-${VERSION}.src"
 PATCH_URI="
-	https://src.fedoraproject.org/rpms/${PN}/raw/f36/f/0001-PATCH-${PN}-Remove-monorepo-requirement.patch
-	https://src.fedoraproject.org/rpms/${PN}/raw/f36/f/add-llvm-cmake-package.patch
-	7.0.1-cygming-config.patch
+	https://src.fedoraproject.org/rpms/${PN}/raw/f37/f/0001-Use-interface-library-for-${PN}-abi-shared.patch
 	5.0.1-cygming-dllexport.patch
 	7.0.1-cygwin-config.patch
 	5.0.1-cygwin-flags.patch
 	9.0.1-cygwin-nodefaultlibs.patch
 	11.0.0-weak-dllexport.patch
 	14.0.5-newlib-regex_word.patch
-	14.0.5-out-of-tree-libunwind.patch
 	14.0.5-cygwin-dllexport.patch
 	14.0.5-newlib-ctype-char-cast.patch
+	15.0.7-cygwin-pthread-constinit.patch
+	15.0.7-cygwin-config.patch
 "
 RESTRICT="debuginfo strip"
 
@@ -38,13 +40,25 @@ libc___devel_CONTENTS="usr/include/c++/v1/ usr/include/libcxx-internal/ usr/lib/
 
 DIFF_EXCLUDES="bad_symlink"
 
+CYGPORT_USE_UNSTABLE_API=1
+src_unpack_hook() {
+    mv ../cmake{-${PV}.src,}
+}
+
 src_compile() {
 	LDFLAGS+=" -Wl,--export-all-symbols"
 
+	# The location of this header changed.
+	if [[ -f /usr/include/cxxabi.h ]]; then
+		local LIBCXX_ABI_PATH=/usr/include
+	else
+		local LIBCXX_ABI_PATH=/usr/include/c++/v1
+	fi
+
 	mkdir -p ${B}/shared
 	cd ${B}/shared
-	cygcmake -DLIBCXX_CXX_ABI=libcxxabi \
-		 -DLIBCXX_CXX_ABI_INCLUDE_PATHS=/usr/include \
+	cygcmake -DLIBCXX_CXX_ABI=system-libcxxabi \
+		 -DLIBCXX_CXX_ABI_INCLUDE_PATHS=${LIBCXX_ABI_PATH} \
 		 -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=OFF \
 		 -DLIBCXX_ENABLE_SHARED=ON \
 		 -DLIBCXX_ENABLE_STATIC=OFF \
@@ -57,8 +71,8 @@ src_compile() {
 	cygninja
 	mkdir -p ${B}/static
 	cd ${B}/static
-	cygcmake -DLIBCXX_CXX_ABI=libcxxabi \
-		 -DLIBCXX_CXX_ABI_INCLUDE_PATHS=/usr/include \
+	cygcmake -DLIBCXX_CXX_ABI=system-libcxxabi \
+		 -DLIBCXX_CXX_ABI_INCLUDE_PATHS=${LIBCXX_ABI_PATH} \
 		 -DLIBCXX_ENABLE_ABI_LINKER_SCRIPT=OFF \
 		 -DLIBCXX_ENABLE_SHARED=OFF \
 		 -DLIBCXX_ENABLE_STATIC=ON \
@@ -72,8 +86,22 @@ src_compile() {
 }
 
 src_install() {
-	cd ${B}/static
-	ninja_install
+	# Manually link libc++.a against libc++abi.a, because the libcxx build system is currently
+	# broken when system-libcxxabi is used.
+	pushd ${B}
+	ar cqT tmp.a `find static -name libc++.a` /usr/lib/libc++abi.a
+	ar -M << EOM
+CREATE tmp.a
+ADDLIB tmp.a
+SAVE
+END
+EOM
+	mv tmp.a libc++.a
+	ranlib libc++.a
+	popd
+	install -D -m 0644 ${B}/libc++.a ${D}/usr/lib/libc++.a
+	rm -f ${B}/libc++.a
+
 	cd ${B}/shared
 	ninja_install
 

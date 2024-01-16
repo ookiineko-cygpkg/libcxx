@@ -1,0 +1,12 @@
+diff '--color=auto' -rNu origsrc/libcxx-15.0.7.src/include/__config src/libcxx-15.0.7.src/include/__config
+--- origsrc/libcxx-15.0.7.src/include/__config	2024-01-16 15:58:50.074114600 +0800
++++ src/libcxx-15.0.7.src/include/__config	2024-01-16 17:20:19.292634200 +0800
+@@ -634,7 +634,7 @@
+ // TODO: We provide a escape hatch with _LIBCPP_NO_ABI_TAG for folks who want to avoid increasing
+ //       the length of symbols with an ABI tag. In practice, we should remove the escape hatch and
+ //       use compression mangling instead, see https://github.com/itanium-cxx-abi/cxx-abi/issues/70.
+-#  ifndef _LIBCPP_NO_ABI_TAG
++#  if !defined(_LIBCPP_NO_ABI_TAG) && !defined(__CYGWIN__)
+ #    define _LIBCPP_HIDE_FROM_ABI                                                                                      \
+       _LIBCPP_HIDDEN _LIBCPP_EXCLUDE_FROM_EXPLICIT_INSTANTIATION                                                       \
+           __attribute__((__abi_tag__(_LIBCPP_TOSTRING(_LIBCPP_VERSIONED_IDENTIFIER))))
